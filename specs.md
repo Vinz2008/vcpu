@@ -21,9 +21,10 @@ instructions : 32 bits wide (first byte opcode, second register, third and fourt
 0x2X : CMP
 -> 0x20 : compare reg with reg
 -> 0x21 : compare reg with number
-0x30 : ADD
-0x40 : SUB
-0x50 : JMP
+0x4X : Math
+-> 0x40 : ADD
+-> 0x41 : SUB
+-> 0x42 : JMP
 
 (add an instruction for syscalls)
 
