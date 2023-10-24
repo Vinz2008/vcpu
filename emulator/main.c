@@ -21,7 +21,7 @@ int main(int argc, char** argv){
     FILE* f = fopen(filename, "rb");
     struct emulator_context* context = malloc(sizeof(struct emulator_context));
     context->code = malloc(sizeof(uint8_t) * 1);
-    context->mem = malloc(sizeof(uint8_t) * MEM_SIZE+1);
+    context->mem = malloc(sizeof(uint8_t) * (MEM_SIZE+1));
     context->mem[0xffff] = 3;
     context->is_cmp_true = false;
     int i = 0;
@@ -72,11 +72,26 @@ int main(int argc, char** argv){
             case 0x21:
                 printf("CMP with num\n");
                 break;
+            case 0x40:
+                printf("ADD val to reg\n");
+                instruction_add_val_to_reg(context, reg, data1, data2);
+                break;
+            case 0x41:
+                printf("SUB\n");
+                break;
+            case 0xFF:
+                printf("NOOP\n");
+                break;
+            case 0xFE:
+                printf("HALT\n");
+                while (1);
+                break;
             default:
                 printf("WARNING : unknown instruction : 0x%x\n", instruction);
         }
     }
     printf("REGS AT THE END : r0 = %x, r1 = %x, r2 = %x, r3 = %x, r4 = %x\n", context->r0, context->r1, context->r2, context->r3, context->r4);
+    printf("REGS AT THE END as ints : r0 = %d, r1 = %d, r2 = %d, r3 = %d, r4 = %d\n", context->r0, context->r1, context->r2, context->r3, context->r4);
     free(context->code);
     free(context->mem);
     free(context);

@@ -21,10 +21,21 @@ instructions : 32 bits wide (first byte opcode, second register, third and fourt
 0x2X : CMP
 -> 0x20 : compare reg with reg
 -> 0x21 : compare reg with number
+0x3X : Jump
+-> 0x30 : branch if equal
+-> 0x31 : branch if >
+-> 0x32 : branch if <
+-> 0x33 : branch always
 0x4X : Math
--> 0x40 : ADD
--> 0x41 : SUB
--> 0x42 : JMP
+-> 0x40 : add value to register
+-> 0x41 : subtract value from register
+-> 0x42 : add register to register
+-> 0x43 : substract register from register
+
+0xFX : misc
+-> 0xFF : noop
+-> 0xFE : halt
+
 
 (add an instruction for syscalls)
 

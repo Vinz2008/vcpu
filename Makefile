@@ -17,3 +17,6 @@ $(EMULATORDIR)/%.o:$(EMULATORDIR)/%.c
 
 clean:
 	rm -rf $(EMULATORDIR)/*.o
+
+run:
+	./vcpu-emulator test.bin
