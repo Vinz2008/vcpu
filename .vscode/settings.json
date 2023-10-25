@@ -26,6 +26,9 @@
         "__memory": "c",
         "limits": "c",
         "locale": "c",
-        "vector": "c"
+        "vector": "c",
+        "*.tcc": "c",
+        "string": "c",
+        "istream": "c"
     }
 }

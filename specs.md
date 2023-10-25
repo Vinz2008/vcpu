@@ -12,8 +12,8 @@ instructions : 32 bits wide (first byte opcode, second register, third and fourt
 
 0x0X : LOAD
 -> 0x00 : load from number to reg (LOAD reg, number)
--> 0x01 : load from reg to reg
--> 0x02 : load from mem to reg
+-> 0x01 : load from reg to reg (LOAD reg, reg)
+-> 0x02 : load from mem to reg (LOAD reg, mem)
 0x1X : STORE
 -> 0x10 : store from reg to memory (16 bits)
 -> 0x11 : store from reg to memory (high 8 bits)

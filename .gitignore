@@ -1,2 +1,4 @@
 vcpu-emulator
+vcpu-assembler
 *.o
+out.bin
