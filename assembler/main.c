@@ -36,8 +36,9 @@ uint8_t uint16_t_high(uint16_t u){
 }
 
 void mainLoop(){
-    while (true){
     getNextToken();
+    while (true){
+    //getNextToken();
     printf("instruction_tok : %d\n", CurTok);
     if (CurTok == tok_eof){
         break;
@@ -74,6 +75,7 @@ void mainLoop(){
         } else if (0) { // TODO add tok_address
             // 0x02 instruction
         }
+        getNextToken();
         // 0X00 instruction
         uint8_t* buf = malloc(sizeof(uint8_t) * BIN_WRITE_BUF_SIZE);
         buf[0] = load_instruction;
@@ -86,6 +88,7 @@ void mainLoop(){
         fwrite(buf, 1, BIN_WRITE_BUF_SIZE, out_file);
         free(buf);
     } else if (strcmp("NOOP", instruction) == 0 || strcmp("HALT", instruction) == 0){
+        getNextToken();
         uint8_t* buf = malloc(sizeof(uint8_t) * BIN_WRITE_BUF_SIZE);
         if (strcmp("NOOP", instruction) == 0){
             buf[0] = 0xFF;
@@ -95,6 +98,43 @@ void mainLoop(){
         memset(buf+1, 0, BIN_WRITE_BUF_SIZE-1);
         fwrite(buf, 1, BIN_WRITE_BUF_SIZE, out_file);
         free(buf);
+    } else if (strcmp("ADD", instruction) == 0){
+        int instruction_to_write;
+        getNextToken();
+        if (CurTok != tok_reg){
+            fprintf(stderr, "expected register after load instruction in line %d\n", line_nb);
+            exit(1);
+        }
+        int reg_temp = reg_nb;
+        getNextToken();
+        if (CurTok != ','){
+            fprintf(stderr, "missing \',\' between values\n");
+            exit(1);
+        }
+        getNextToken();
+        uint8_t data1, data2;
+        if (CurTok == tok_number){
+            instruction_to_write = 0x40;
+            data1 = uint16_t_low((uint16_t)number);
+            data2 = uint16_t_high((uint16_t)number);
+        } else if (CurTok == tok_reg){
+            instruction_to_write = 0x42;
+            data1 = 0x00;
+            data2 = reg_nb;
+        } else {
+            printf("Tok at error : %d\n", CurTok);
+            error_and_exit("expected a number or a reg in instruction %s\n", instruction);
+        }
+        getNextToken();
+        uint8_t* buf = malloc(sizeof(uint8_t) * BIN_WRITE_BUF_SIZE);
+        buf[0] = instruction_to_write;
+        buf[1] = reg_temp;
+        buf[2] = data1;
+        buf[3] = data2;
+        fwrite(buf, 1, BIN_WRITE_BUF_SIZE, out_file);
+        free(buf);
+    } else if (strcmp("SUB", instruction) == 0){
+        
     }
     }
     /*while (getNextToken() != tok_unknown && CurTok != '\0'){

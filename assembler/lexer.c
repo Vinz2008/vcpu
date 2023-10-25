@@ -29,6 +29,7 @@ int getCharLine(){
         instruction = malloc(sizeof(char) * INSTRUCTION_BUF_SIZE);
         buf_size = 100;
         buffer = malloc(buf_size * sizeof(char)); // 100 is for now long enough for the max size of a line
+        memset(buffer, 0, INSTRUCTION_BUF_SIZE);
         getline(&buffer, &buf_size, in_file);
         printf("got line buffer : %s\n", buffer);
         line = buffer;
@@ -47,6 +48,7 @@ int getCharLine(){
         printf("NEW LINE\n");
         pos=0;
         line_nb++;
+        memset(buffer, 0, INSTRUCTION_BUF_SIZE);
         getline(&buffer, &buf_size, in_file);
         line = buffer;
         c = line[pos];
@@ -56,7 +58,7 @@ int getCharLine(){
     } else {
         pos++;
     }
-    //printf("getCharLine returned : %c\n", c);
+    printf("getCharLine returned : %c\n", c);
     return c;
 }
 

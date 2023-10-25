@@ -77,7 +77,16 @@ int main(int argc, char** argv){
                 instruction_add_val_to_reg(context, reg, data1, data2);
                 break;
             case 0x41:
-                printf("SUB\n");
+                printf("SUB val from reg\n");
+                instruction_sub_val_from_reg(context, reg, data1, data2);
+                break;
+            case 0x42:
+                printf("ADD reg to reg");
+                instruction_add_reg_to_reg(context, reg, data1, data2);
+                break;
+            case 0x43:
+                printf("SUB reg from reg");
+                instruction_sub_reg_from_reg(context, reg, data1, data2);
                 break;
             case 0xFF:
                 printf("NOOP\n");
