@@ -4,7 +4,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "lexer.h"
-
+#include "instructions.h"
+#include "errors.h"
 
 #define BIN_WRITE_BUF_SIZE 4
 
@@ -46,7 +47,9 @@ void mainLoop(){
         exit(1);
     }
     if (strcmp("LOAD", instruction) == 0){
+        //generate_load();
         getNextToken();
+        //generate_load();
         // TODO : put getting the reg with verifying the token in a separate function
         if (CurTok != tok_reg){
             fprintf(stderr, "expected register after load instruction in line %d\n", line_nb);
@@ -80,6 +83,16 @@ void mainLoop(){
         buf[2] = data1;
         buf[3] = data2;
         printf("reg nb write : %d %d\n", reg_nb, (uint8_t)reg_nb);
+        fwrite(buf, 1, BIN_WRITE_BUF_SIZE, out_file);
+        free(buf);
+    } else if (strcmp("NOOP", instruction) == 0 || strcmp("HALT", instruction) == 0){
+        uint8_t* buf = malloc(sizeof(uint8_t) * BIN_WRITE_BUF_SIZE);
+        if (strcmp("NOOP", instruction) == 0){
+            buf[0] = 0xFF;
+        } else { // HALT
+            buf[0] = 0xFE; 
+        }
+        memset(buf+1, 0, BIN_WRITE_BUF_SIZE-1);
         fwrite(buf, 1, BIN_WRITE_BUF_SIZE, out_file);
         free(buf);
     }

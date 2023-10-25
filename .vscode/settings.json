@@ -29,6 +29,7 @@
         "vector": "c",
         "*.tcc": "c",
         "string": "c",
-        "istream": "c"
+        "istream": "c",
+        "stdarg.h": "c"
     }
 }
