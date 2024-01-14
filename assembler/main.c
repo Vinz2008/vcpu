@@ -21,9 +21,9 @@ extern int reg_nb;
 extern int CurTok;
 extern char* instruction;
 
-
 extern int number;
 
+extern char* line;
 
 void mainLoop(){
     getNextToken();
@@ -79,5 +79,8 @@ int main(int argc, char** argv){
     in_file = fopen(filename, "r");
     out_file = fopen(output_filename, "wb");
     mainLoop();
+    free(instruction);
+    free(line);
     fclose(in_file);
+    fclose(out_file);
 }

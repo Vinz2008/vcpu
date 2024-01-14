@@ -109,6 +109,7 @@ int gettok(){
         int val = (int)strtol(numStr, NULL, 10);
         printf("number : %d\n", val);
         number = val;
+        free(numStr);
         return tok_number;
     }
     if (LastChar == EOF){
