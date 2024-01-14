@@ -38,16 +38,15 @@ void mainLoop(){
         exit(1);
     }
     if (strcmp("LOAD", instruction) == 0){
-        //generate_load();
-        getNextToken();
+        //getNextToken();
         generate_load();
     } else if (strcmp("NOOP", instruction) == 0 || strcmp("HALT", instruction) == 0){
-        getNextToken();
-        generate_misc_instruction();
+        //getNextToken();
+        generate_misc();
     } else if (strcmp("ADD", instruction) == 0){
-        generate_add_instruction();
+        generate_add();
     } else if (strcmp("SUB", instruction) == 0){
-        
+        generate_sub();
     }
     }
     /*while (getNextToken() != tok_unknown && CurTok != '\0'){
