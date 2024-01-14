@@ -6,9 +6,10 @@
 #include "lexer.h"
 #include "instructions.h"
 #include "errors.h"
+#include "utils.h"
 
-#define BIN_WRITE_BUF_SIZE 4
 
+// TODO : create a context struct with the line number, the number, the instruction and the file pointers (and which will be passed to all functions ?)
 FILE* in_file;
 
 FILE* out_file;
@@ -22,28 +23,6 @@ extern char* instruction;
 
 
 extern int number;
-
-// from emulator/instructions.c
-uint16_t from_2_uint8_t_to_uint16_t(uint8_t u1, uint8_t u2){
-    return ((uint16_t)u2 << 8) | u1;
-}
-uint8_t uint16_t_low(uint16_t u){
-    return u & 0xFF;
-}
-
-uint8_t uint16_t_high(uint16_t u){
-    return (u >> 8) & 0xFF;
-}
-
-
-
-void debug_print_uint8_buf(uint8_t* buf, size_t size){
-    printf("buf : ");
-    for (int i = 0; i < size; i++){
-        printf("%#x ", buf[i]);
-    }
-    printf("\n");
-}
 
 
 void mainLoop(){
@@ -61,9 +40,9 @@ void mainLoop(){
     if (strcmp("LOAD", instruction) == 0){
         //generate_load();
         getNextToken();
-        //generate_load();
+        generate_load();
         // TODO : put getting the reg with verifying the token in a separate function
-        if (CurTok != tok_reg){
+        /*if (CurTok != tok_reg){
             fprintf(stderr, "expected register after load instruction in line %d\n", line_nb);
             exit(1);
         }
@@ -98,10 +77,11 @@ void mainLoop(){
         printf("reg nb write : %d %d\n", reg_nb, (uint8_t)reg_nb);
         fwrite(buf, 1, BIN_WRITE_BUF_SIZE, out_file);
         debug_print_uint8_buf(buf, BIN_WRITE_BUF_SIZE);
-        free(buf);
+        free(buf);*/
     } else if (strcmp("NOOP", instruction) == 0 || strcmp("HALT", instruction) == 0){
         getNextToken();
-        uint8_t* buf = malloc(sizeof(uint8_t) * BIN_WRITE_BUF_SIZE);
+        generate_misc_instruction();
+        /*uint8_t* buf = malloc(sizeof(uint8_t) * BIN_WRITE_BUF_SIZE);
         if (strcmp("NOOP", instruction) == 0){
             buf[0] = 0xFF;
         } else { // HALT
@@ -109,9 +89,10 @@ void mainLoop(){
         }
         memset(buf+1, 0, BIN_WRITE_BUF_SIZE-1);
         fwrite(buf, 1, BIN_WRITE_BUF_SIZE, out_file);
-        free(buf);
+        free(buf);*/
     } else if (strcmp("ADD", instruction) == 0){
-        int instruction_to_write = 0x40;
+        generate_add_instruction();
+        /*int instruction_to_write = 0x40;
         getNextToken();
         if (CurTok != tok_reg){
             fprintf(stderr, "expected register after load instruction in line %d\n", line_nb);
@@ -144,7 +125,7 @@ void mainLoop(){
         buf[2] = data1;
         buf[3] = data2;
         fwrite(buf, 1, BIN_WRITE_BUF_SIZE, out_file);
-        free(buf);
+        free(buf);*/
     } else if (strcmp("SUB", instruction) == 0){
         
     }
