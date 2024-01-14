@@ -35,6 +35,17 @@ uint8_t uint16_t_high(uint16_t u){
     return (u >> 8) & 0xFF;
 }
 
+
+
+void debug_print_uint8_buf(uint8_t* buf, size_t size){
+    printf("buf : ");
+    for (int i = 0; i < size; i++){
+        printf("%#x ", buf[i]);
+    }
+    printf("\n");
+}
+
+
 void mainLoop(){
     getNextToken();
     while (true){
@@ -57,7 +68,7 @@ void mainLoop(){
             exit(1);
         }
         int load_instruction = 0X00;
-        uint8_t data1, data2;
+        uint8_t data1 = 0, data2 = 0;
         int reg_temp = reg_nb;
         getNextToken();
         if (CurTok != ','){
@@ -86,6 +97,7 @@ void mainLoop(){
         buf[3] = data2;
         printf("reg nb write : %d %d\n", reg_nb, (uint8_t)reg_nb);
         fwrite(buf, 1, BIN_WRITE_BUF_SIZE, out_file);
+        debug_print_uint8_buf(buf, BIN_WRITE_BUF_SIZE);
         free(buf);
     } else if (strcmp("NOOP", instruction) == 0 || strcmp("HALT", instruction) == 0){
         getNextToken();
@@ -99,7 +111,7 @@ void mainLoop(){
         fwrite(buf, 1, BIN_WRITE_BUF_SIZE, out_file);
         free(buf);
     } else if (strcmp("ADD", instruction) == 0){
-        int instruction_to_write;
+        int instruction_to_write = 0x40;
         getNextToken();
         if (CurTok != tok_reg){
             fprintf(stderr, "expected register after load instruction in line %d\n", line_nb);

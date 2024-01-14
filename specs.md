@@ -37,7 +37,7 @@ instructions : 32 bits wide (first byte opcode, second register, third and fourt
 -> 0xFE : halt
 
 
-(add an instruction for syscalls)
+(TODO : add an instruction for syscalls)
 
 
 ## Registers
