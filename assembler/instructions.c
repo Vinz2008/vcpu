@@ -49,6 +49,7 @@ void generate_load(){
     }
     getNextToken();
     // 0X00 instruction
+    // TODO : create a function which allocates the buffer and fill it
     uint8_t* buf = malloc(sizeof(uint8_t) * BIN_WRITE_BUF_SIZE);
     buf[0] = load_instruction;
     buf[1] = reg_temp;
@@ -147,4 +148,33 @@ void generate_misc(){
     memset(buf+1, 0, BIN_WRITE_BUF_SIZE-1);
     fwrite(buf, 1, BIN_WRITE_BUF_SIZE, out_file);
     free(buf);
+}
+
+void generate_jmp_always(){
+
+}
+
+void generate_jmp_equ(){
+    
+}
+
+void generate_jmp_greater_than(){
+    
+}
+
+void generate_jmp_lower_than(){
+    
+}
+
+void generate_jmp(){
+    getNextToken();
+    if (strcmp("JMP", instruction) == 0){
+        generate_jmp_always();
+    } else if (strcmp("JEQ", instruction) == 0){
+        generate_jmp_equ();
+    } else if (strcmp("JGT", instruction) == 0){
+        generate_jmp_greater_than();
+    } else if (strcmp("JLT", instruction) == 0){
+        generate_jmp_lower_than();
+    }
 }

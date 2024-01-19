@@ -20,14 +20,17 @@ int main(int argc, char** argv){
     printf("filename : %s\n", filename);
     FILE* f = fopen(filename, "rb");
     struct emulator_context* context = malloc(sizeof(struct emulator_context));
-    context->code = malloc(sizeof(uint8_t) * 1);
+    //context->code = malloc(sizeof(uint8_t) * 1);
     context->mem = malloc(sizeof(uint8_t) * (MEM_SIZE+1));
     context->mem[0xffff] = 3;
-    context->is_cmp_true = false;
+    context->cmp_flag = false;
+    context->is_greater_flag = false;
+    context->is_lower_flag = false;
     int i = 0;
-    while (fread(&context->code[i],sizeof(uint8_t), 1, f) > 0){
+    //while (fread(&context->code[i],sizeof(uint8_t), 1, f) > 0){
+    while (fread(&context->mem[i],sizeof(uint8_t), 1, f) > 0){
         //printf("%p\n", context->code[i]);
-        context->code = realloc(context->code, sizeof(uint8_t) * (i + 1));
+        //context->code = realloc(context->code, sizeof(uint8_t) * (i + 1));
         i++;
     }
     context->code_size = i;
@@ -35,11 +38,12 @@ int main(int argc, char** argv){
     /*for (int i = 0; i < context->code_size; i++){
         printf("instruction : %x\n", context->code[i]);
     }*/
-    for (int i = 0; i < context->code_size; i += 4){
-        uint8_t instruction =  context->code[i];
-        uint8_t reg = context->code[i+1];
-        uint8_t data1 = context->code[i+2];
-        uint8_t data2 = context->code[i+3];
+    //for (int i = 0; i < context->code_size; i += 4){
+    for (context->pc = 0; context->pc < context->code_size; context->pc += 4){
+        uint8_t instruction =  context->mem[context->pc];
+        uint8_t reg = context->mem[context->pc+1];
+        uint8_t data1 = context->mem[context->pc+2];
+        uint8_t data2 = context->mem[context->pc+3];
         switch (instruction){
             case 0x00:
                 printf("LOAD from num\n");
@@ -72,6 +76,11 @@ int main(int argc, char** argv){
             case 0x21:
                 printf("CMP with num\n");
                 break;
+            case 0x30:
+            case 0x31:
+            case 0x32:
+            case 0x33:
+                instruction_jump(context, instruction, from_2_uint8_t_to_uint16_t(data1, data2));
             case 0x40:
                 printf("ADD val to reg\n");
                 instruction_add_val_to_reg(context, reg, data1, data2);
@@ -101,7 +110,7 @@ int main(int argc, char** argv){
     }
     printf("REGS AT THE END : r0 = %x, r1 = %x, r2 = %x, r3 = %x, r4 = %x\n", context->r0, context->r1, context->r2, context->r3, context->r4);
     printf("REGS AT THE END as ints : r0 = %d, r1 = %d, r2 = %d, r3 = %d, r4 = %d\n", context->r0, context->r1, context->r2, context->r3, context->r4);
-    free(context->code);
+    //free(context->code);
     free(context->mem);
     free(context);
     fclose(f);

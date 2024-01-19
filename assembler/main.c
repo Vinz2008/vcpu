@@ -47,7 +47,10 @@ void mainLoop(){
         generate_add();
     } else if (strcmp("SUB", instruction) == 0){
         generate_sub();
+    } else if (instruction[0] == 'J'){
+        generate_jmp();
     }
+
     }
     /*while (getNextToken() != tok_unknown && CurTok != '\0'){
         printf("CurTok : %d\n", CurTok);

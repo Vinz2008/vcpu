@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "context.h"
 
 
@@ -93,12 +94,16 @@ void instruction_store_from_reg_to_mem_low(struct emulator_context* context, uin
 }
 
 void instruction_compare_reg_with_reg(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2){
-    context->is_cmp_true = (*get_reg_address(context, reg) == *get_reg_address(context, data2));
+    context->cmp_flag = (*get_reg_address(context, reg) == *get_reg_address(context, data2));
+    context->is_greater_flag = (*get_reg_address(context, reg) > *get_reg_address(context, data2));
+    context->is_lower_flag = (*get_reg_address(context, reg) < *get_reg_address(context, data2));
 }
 
 void instruction_compare_reg_with_num(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2){
     uint16_t value = from_2_uint8_t_to_uint16_t(data1, data2);
-    context->is_cmp_true = (*get_reg_address(context, reg) == value);
+    context->cmp_flag = (*get_reg_address(context, reg) == value);
+    context->is_greater_flag = (*get_reg_address(context, reg) > value);
+    context->is_lower_flag = (*get_reg_address(context, reg) < value);
 }
 
 void instruction_add_val_to_reg(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2){
@@ -117,4 +122,47 @@ void instruction_sub_val_from_reg(struct emulator_context* context, uint8_t reg,
 
 void instruction_sub_reg_from_reg(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2){
     *get_reg_address(context, reg) = *get_reg_address(context, reg) - *get_reg_address(context, data2);
+}
+
+void instruction_jump_always(struct emulator_context* context, uint16_t address){
+    context->pc = address;
+}
+
+void instruction_jump_if_equ(struct emulator_context* context, uint16_t address){
+    if (context->cmp_flag){
+        context->pc = address;
+    }
+}
+
+void instruction_jump_if_greater(struct emulator_context* context, uint16_t address){
+    if (context->is_greater_flag){
+        context->pc = address;
+    }
+}
+
+void instruction_jump_if_lower(struct emulator_context* context, uint16_t address){
+    if (context->is_lower_flag){
+        context->pc = address;
+    }
+}
+
+void instruction_jump(struct emulator_context* context, uint8_t instruction, uint16_t address){
+    switch (instruction){
+    case 0x30:
+        instruction_jump_if_equ(context, address);
+        break;
+    case 0x31:
+        instruction_jump_if_greater(context, address);
+        break;
+    case 0x32:
+        instruction_jump_if_lower(context, address);
+        break;
+    case 0x33:
+        instruction_jump_always(context, address);
+        break;
+    default:
+        printf("ERROR : Unknown jump instruction\n"); // should never happen
+        exit(1);
+    }
+    
 }

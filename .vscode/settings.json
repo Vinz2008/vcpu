@@ -30,6 +30,8 @@
         "*.tcc": "c",
         "string": "c",
         "istream": "c",
-        "stdarg.h": "c"
+        "stdarg.h": "c",
+        "future": "c",
+        "stdlib.h": "c"
     }
 }
