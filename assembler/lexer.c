@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
 char* line = NULL;
 int pos = 0;
@@ -15,6 +16,8 @@ char* instruction;
 int pos_instruction = 0;
 
 int number;
+
+int hex_nb;
 
 int CurTok;
 
@@ -44,6 +47,15 @@ int getCharLine(){
         printf("next char after \\0 : %d\n", line[pos]);*/
         return EOF;
     }
+    //printf("c : %c\n", c);
+    if (c == '#'){
+        //pos++;
+        while (line[pos++] != '\n'){}
+        //pos++;
+        /*c = getCharLine();
+        printf("char after comment : %c %d\n", c);*/
+        c = '\n';
+    }
     if (c =='\n'){
         printf("NEW LINE\n");
         pos=0;
@@ -51,8 +63,9 @@ int getCharLine(){
         //memset(buffer, 0, INSTRUCTION_BUF_SIZE);
         getline(&buffer, &buf_size, in_file);
         line = buffer;
-        c = line[pos];
-        pos++;
+        //c = line[pos];
+        //pos++;
+        c = getCharLine();
         printf("next char after \\n : %d\n", c);
         // TODO goToNextLine
     } else {
@@ -100,17 +113,38 @@ int gettok(){
         // TODO : have a dynamically allocated string that will expand if it is longer than expected
         char* numStr = malloc(25 * sizeof(char));
         int pos_numstr = 0;
-        do {
+        int first_digit = LastChar;
+        LastChar = getCharLine();
+        bool is_hex = false;
+        if (first_digit == '0' && LastChar == 'x'){
+            LastChar = getCharLine();
+            is_hex = true;
+        } else {
+            numStr[pos_numstr] = first_digit;
+            pos_numstr++;
+        }
+        while (isdigit(LastChar)){
             numStr[pos_numstr] = LastChar;
             pos_numstr++;
             LastChar = getCharLine();
-        } while (isdigit(LastChar));
+        }
+        /*do {
+            numStr[pos_numstr] = LastChar;
+            pos_numstr++;
+            LastChar = getCharLine();
+        } while (isdigit(LastChar));*/
         // TODO : maybe add a special to int function : https://stackoverflow.com/questions/7021725/how-to-convert-a-string-to-integer-in-c to verify if the long is bigger than INT_MAX
-        int val = (int)strtol(numStr, NULL, 10);
-        printf("number : %d\n", val);
-        number = val;
+        int base = (is_hex) ? 16 : 10;
+        int val = (int)strtol(numStr, NULL, base);
         free(numStr);
-        return tok_number;
+        if (is_hex){
+            hex_nb = val;
+            return tok_hex;
+        } else {
+            printf("number : %d\n", val);
+            number = val;
+            return tok_number;
+        }
     }
     if (LastChar == EOF){
         return tok_eof;

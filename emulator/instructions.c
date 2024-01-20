@@ -93,13 +93,13 @@ void instruction_store_from_reg_to_mem_low(struct emulator_context* context, uin
     context->mem[address] = uint16_t_low(*get_reg_address(context, reg));
 }
 
-void instruction_compare_reg_with_reg(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2){
+void instruction_cmp_reg_with_reg(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2){
     context->cmp_flag = (*get_reg_address(context, reg) == *get_reg_address(context, data2));
     context->is_greater_flag = (*get_reg_address(context, reg) > *get_reg_address(context, data2));
     context->is_lower_flag = (*get_reg_address(context, reg) < *get_reg_address(context, data2));
 }
 
-void instruction_compare_reg_with_num(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2){
+void instruction_cmp_reg_with_num(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2){
     uint16_t value = from_2_uint8_t_to_uint16_t(data1, data2);
     context->cmp_flag = (*get_reg_address(context, reg) == value);
     context->is_greater_flag = (*get_reg_address(context, reg) > value);
@@ -163,6 +163,5 @@ void instruction_jump(struct emulator_context* context, uint8_t instruction, uin
     default:
         printf("ERROR : Unknown jump instruction\n"); // should never happen
         exit(1);
-    }
-    
+    }   
 }

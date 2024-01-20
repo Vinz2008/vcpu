@@ -47,6 +47,8 @@ void mainLoop(){
         generate_add();
     } else if (strcmp("SUB", instruction) == 0){
         generate_sub();
+    } else if (strcmp("CMP", instruction) == 0){
+        generate_cmp();
     } else if (instruction[0] == 'J'){
         generate_jmp();
     }

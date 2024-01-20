@@ -32,6 +32,8 @@
         "istream": "c",
         "stdarg.h": "c",
         "future": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "allocator": "c",
+        "coroutine": "c"
     }
 }

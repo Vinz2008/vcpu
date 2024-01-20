@@ -39,11 +39,23 @@ int main(int argc, char** argv){
         printf("instruction : %x\n", context->code[i]);
     }*/
     //for (int i = 0; i < context->code_size; i += 4){
+
+    bool is_last_instruction_cmp = false;
+
     for (context->pc = 0; context->pc < context->code_size; context->pc += 4){
         uint8_t instruction =  context->mem[context->pc];
         uint8_t reg = context->mem[context->pc+1];
         uint8_t data1 = context->mem[context->pc+2];
         uint8_t data2 = context->mem[context->pc+3];
+        
+        if (!is_last_instruction_cmp){
+            context->cmp_flag = false;
+            context->is_greater_flag = false;
+            context->is_lower_flag = false;
+        }
+        is_last_instruction_cmp = false;
+
+
         switch (instruction){
             case 0x00:
                 printf("LOAD from num\n");
@@ -72,15 +84,19 @@ int main(int argc, char** argv){
                 break;
             case 0x20:
                 printf("CMP with reg\n");
+                instruction_cmp_reg_with_reg(context, reg, data1, data2);
                 break;
             case 0x21:
                 printf("CMP with num\n");
+                instruction_cmp_reg_with_num(context, reg, data1, data2);
                 break;
             case 0x30:
             case 0x31:
             case 0x32:
             case 0x33:
+                printf("JUMP\n");
                 instruction_jump(context, instruction, from_2_uint8_t_to_uint16_t(data1, data2));
+                break;
             case 0x40:
                 printf("ADD val to reg\n");
                 instruction_add_val_to_reg(context, reg, data1, data2);
@@ -106,6 +122,11 @@ int main(int argc, char** argv){
                 break;
             default:
                 printf("WARNING : unknown instruction : 0x%x\n", instruction);
+        }
+        if (instruction == 0x20 || instruction == 0x21){
+            is_last_instruction_cmp = true;
+        } else {
+            is_last_instruction_cmp = false;
         }
     }
     printf("REGS AT THE END : r0 = %x, r1 = %x, r2 = %x, r3 = %x, r4 = %x\n", context->r0, context->r1, context->r2, context->r3, context->r4);
