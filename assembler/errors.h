@@ -1,1 +1,1 @@
-void error_and_exit(char* format, ...);
+void error_and_exit(struct assembler_context* context, char* format, ...);

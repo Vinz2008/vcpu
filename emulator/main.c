@@ -18,7 +18,6 @@ int main(int argc, char** argv){
     printf("argc : %d\n", argc);
     char* filename = argv[1];
     printf("filename : %s\n", filename);
-    FILE* f = fopen(filename, "rb");
     struct emulator_context* context = malloc(sizeof(struct emulator_context));
     //context->code = malloc(sizeof(uint8_t) * 1);
     context->mem = malloc(sizeof(uint8_t) * (MEM_SIZE+1));
@@ -27,6 +26,7 @@ int main(int argc, char** argv){
     context->is_greater_flag = false;
     context->is_lower_flag = false;
     int i = 0;
+    FILE* f = fopen(filename, "rb");
     //while (fread(&context->code[i],sizeof(uint8_t), 1, f) > 0){
     while (fread(&context->mem[i],sizeof(uint8_t), 1, f) > 0){
         //printf("%p\n", context->code[i]);
@@ -94,8 +94,9 @@ int main(int argc, char** argv){
             case 0x31:
             case 0x32:
             case 0x33:
-                printf("JUMP\n");
-                instruction_jump(context, instruction, from_2_uint8_t_to_uint16_t(data1, data2));
+                int address = from_2_uint8_t_to_uint16_t(data1, data2);
+                printf("JUMP to %d\n", (int)address);
+                instruction_jump(context, instruction, address);
                 break;
             case 0x40:
                 printf("ADD val to reg\n");

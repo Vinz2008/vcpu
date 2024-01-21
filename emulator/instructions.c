@@ -142,11 +142,13 @@ void instruction_jump_if_greater(struct emulator_context* context, uint16_t addr
 
 void instruction_jump_if_lower(struct emulator_context* context, uint16_t address){
     if (context->is_lower_flag){
-        context->pc = address;
+        context->pc = (int)address;
     }
 }
 
 void instruction_jump(struct emulator_context* context, uint8_t instruction, uint16_t address){
+    /*printf("jump to %d\n", (int)address);
+    printf("instruction in jump address : %x\n", context->mem[address]);*/
     switch (instruction){
     case 0x30:
         instruction_jump_if_equ(context, address);

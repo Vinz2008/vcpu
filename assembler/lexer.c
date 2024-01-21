@@ -5,39 +5,40 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include "context.h"
 
-char* line = NULL;
-int pos = 0;
+//char* line = NULL;
+//int pos = 0;
 
-int reg_nb;
+//int reg_nb;
 
 #define INSTRUCTION_BUF_SIZE 20
-char* instruction;
-int pos_instruction = 0;
+//char* instruction;
+//int pos_instruction = 0;
 
-int number;
+//int number;
 
-int hex_nb;
+//int hex_nb;
 
-int CurTok;
+//int CurTok;
 
-int line_nb = 1;
+//int line_nb = 1;
 
-extern FILE* in_file;
+//extern FILE* in_file;
 
-int getCharLine(){
+int getCharLine(struct assembler_context* context){
     static char* buffer;
     size_t buf_size;
-    if (line == NULL){
-        instruction = malloc(sizeof(char) * INSTRUCTION_BUF_SIZE);
+    if (context->line == NULL){
+        context->instruction = malloc(sizeof(char) * INSTRUCTION_BUF_SIZE);
         buf_size = 100;
         buffer = malloc(buf_size * sizeof(char)); // 100 is for now long enough for the max size of a line
         //memset(buffer, 0, INSTRUCTION_BUF_SIZE);
-        getline(&buffer, &buf_size, in_file);
+        getline(&buffer, &buf_size, context->in_file);
         printf("got line buffer : %s\n", buffer);
-        line = buffer;
+        context->line = buffer;
     }
-    int c = line[pos];
+    int c = context->line[context->pos];
     if (c == '\0'){
         printf("\\0 FOUND\n");
         /*while (c == '\0'){
@@ -48,9 +49,9 @@ int getCharLine(){
         return EOF;
     }
     //printf("c : %c\n", c);
-    if (c == '#'){
+    if (c == '#' || c == '.'){
         //pos++;
-        while (line[pos++] != '\n'){}
+        while (context->line[context->pos++] != '\n'){}
         //pos++;
         /*c = getCharLine();
         printf("char after comment : %c %d\n", c);*/
@@ -58,55 +59,70 @@ int getCharLine(){
     }
     if (c =='\n'){
         printf("NEW LINE\n");
-        pos=0;
-        line_nb++;
+        context->pos = 0;
+        context->line_nb++;
         //memset(buffer, 0, INSTRUCTION_BUF_SIZE);
-        getline(&buffer, &buf_size, in_file);
-        line = buffer;
+        getline(&buffer, &buf_size, context->in_file);
+        context->line = buffer;
         //c = line[pos];
         //pos++;
-        c = getCharLine();
+        c = getCharLine(context);
         printf("next char after \\n : %d\n", c);
         // TODO goToNextLine
     } else {
-        pos++;
+        context->pos++;
     }
     //printf("getCharLine returned : %c\n", c);
     return c;
 }
 
-int gettok(){
+int gettok(struct assembler_context* context){
     static int LastChar = ' ';
     while (isspace(LastChar)){
-        LastChar = getCharLine();
+        LastChar = getCharLine(context);
     }
     if (isalpha(LastChar)){
         if (isupper(LastChar)){
             // instruction
-            pos_instruction = 0;
-            memset(instruction, 0, INSTRUCTION_BUF_SIZE);
-            instruction[pos_instruction] = LastChar;
-            pos_instruction++;
-            while (isalnum((LastChar = getCharLine()))){ // && is_upper ?
-                instruction[pos_instruction] = LastChar;
-                pos_instruction++;
+            context->pos_instruction = 0;
+            memset(context->instruction, 0, INSTRUCTION_BUF_SIZE);
+            context->instruction[context->pos_instruction] = LastChar;
+            context->pos_instruction++;
+            while (isalnum((LastChar = getCharLine(context)))){ // && is_upper ?
+                context->instruction[context->pos_instruction] = LastChar;
+                context->pos_instruction++;
             }
-            printf("instruction %s\n", instruction);
+            printf("instruction %s\n", context->instruction);
             return tok_instruction;
         }
         if (LastChar == 'r'){
             //reg
-            LastChar = getCharLine();
+            LastChar = getCharLine(context);
             if (!isdigit(LastChar)){
                 // TODO : create a error and exit function
                 fprintf(stderr, "reg number is not valid");
                 exit(1);
             }            
-            reg_nb = -('0' - LastChar);
-            printf("reg number : %d\n", reg_nb);
-            LastChar = getCharLine();
+            context->reg_nb = -('0' - LastChar);
+            printf("reg number : %d\n", context->reg_nb);
+            LastChar = getCharLine(context);
             return tok_reg;
         }
+        // label name
+        int label_length = 5;
+        char* label_name = malloc(sizeof(char)  * label_length);
+        int pos_label = 0;
+        do {
+            label_name[pos_label] = LastChar;
+            pos_label++;
+            if (pos_label+1 == label_length){
+                label_length += 5;
+                label_name = realloc(label_name, sizeof(char) * label_length);
+            }
+        } while ((isalnum((LastChar = getCharLine(context))) || LastChar == '_') && !isupper(LastChar)); // So labels can't contain uppercase letters TODO ?
+        printf("label name : %s\n", label_name);
+        context->label_name = label_name;
+        return tok_label_name;
     }
     if (isdigit(LastChar)) {
         // number
@@ -114,10 +130,10 @@ int gettok(){
         char* numStr = malloc(25 * sizeof(char));
         int pos_numstr = 0;
         int first_digit = LastChar;
-        LastChar = getCharLine();
+        LastChar = getCharLine(context);
         bool is_hex = false;
         if (first_digit == '0' && LastChar == 'x'){
-            LastChar = getCharLine();
+            LastChar = getCharLine(context);
             is_hex = true;
         } else {
             numStr[pos_numstr] = first_digit;
@@ -126,7 +142,7 @@ int gettok(){
         while (isdigit(LastChar)){
             numStr[pos_numstr] = LastChar;
             pos_numstr++;
-            LastChar = getCharLine();
+            LastChar = getCharLine(context);
         }
         /*do {
             numStr[pos_numstr] = LastChar;
@@ -138,11 +154,11 @@ int gettok(){
         int val = (int)strtol(numStr, NULL, base);
         free(numStr);
         if (is_hex){
-            hex_nb = val;
+            context->hex_nb = val;
             return tok_hex;
         } else {
             printf("number : %d\n", val);
-            number = val;
+            context->number = val;
             return tok_number;
         }
     }
@@ -151,11 +167,11 @@ int gettok(){
     }
     printf("LastChar returned : %c (as int : %d)\n", LastChar, LastChar);
     int ThisChar = LastChar;
-    LastChar = getCharLine();
+    LastChar = getCharLine(context);
     return ThisChar;
 }
 
-int getNextToken(){
-    CurTok = gettok();
-    return CurTok;
+int getNextToken(struct assembler_context* context){
+    context->CurTok = gettok(context);
+    return context->CurTok;
 }

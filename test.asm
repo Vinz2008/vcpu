@@ -6,8 +6,8 @@ CMP r2, 2570
 JEQ 0x0
 # loop
 LOAD r3, 0
+.start_loop
 ADD r3, 1
 CMP r3, 10
-# WHY DOES IT WORK AS AN HEX WHEN IT IS A NUMBER
-JLT 24
+JLT start_loop
 NOOP

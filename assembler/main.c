@@ -7,14 +7,15 @@
 #include "instructions.h"
 #include "errors.h"
 #include "utils.h"
+#include "context.h"
 
 
 // TODO : create a context struct with the line number, the number, the instruction and the file pointers (and which will be passed to all functions ?)
-FILE* in_file;
+/*FILE* in_file;
 
-FILE* out_file;
+FILE* out_file;*/
 
-extern int line_nb;
+/*extern int line_nb;
 
 extern int reg_nb;
 
@@ -23,34 +24,34 @@ extern char* instruction;
 
 extern int number;
 
-extern char* line;
+extern char* line;*/
 
-void mainLoop(){
-    getNextToken();
+void mainLoop(struct assembler_context* context){
+    getNextToken(context);
     while (true){
     //getNextToken();
-    printf("instruction_tok : %d\n", CurTok);
-    if (CurTok == tok_eof){
+    printf("instruction_tok : %d\n", context->CurTok);
+    if (context->CurTok == tok_eof){
         break;
     }
-    if (CurTok != tok_instruction){
-        fprintf(stderr, "expected instruction at the start of the line %d\n", line_nb);
+    if (context->CurTok != tok_instruction){
+        fprintf(stderr, "expected instruction at the start of the line %d\n", context->line_nb);
         exit(1);
     }
-    if (strcmp("LOAD", instruction) == 0){
+    if (strcmp("LOAD", context->instruction) == 0){
         //getNextToken();
-        generate_load();
-    } else if (strcmp("NOOP", instruction) == 0 || strcmp("HALT", instruction) == 0){
+        generate_load(context);
+    } else if (strcmp("NOOP", context->instruction) == 0 || strcmp("HALT", context->instruction) == 0){
         //getNextToken();
-        generate_misc();
-    } else if (strcmp("ADD", instruction) == 0){
-        generate_add();
-    } else if (strcmp("SUB", instruction) == 0){
-        generate_sub();
-    } else if (strcmp("CMP", instruction) == 0){
-        generate_cmp();
-    } else if (instruction[0] == 'J'){
-        generate_jmp();
+        generate_misc(context);
+    } else if (strcmp("ADD", context->instruction) == 0){
+        generate_add(context);
+    } else if (strcmp("SUB", context->instruction) == 0){
+        generate_sub(context);
+    } else if (strcmp("CMP", context->instruction) == 0){
+        generate_cmp(context);
+    } else if (context->instruction[0] == 'J'){
+        generate_jmp(context);
     }
 
     }
@@ -80,11 +81,20 @@ int main(int argc, char** argv){
         printf("missing file for emulator\n");
         exit(1);
     }
-    in_file = fopen(filename, "r");
-    out_file = fopen(output_filename, "wb");
-    mainLoop();
-    free(instruction);
-    free(line);
-    fclose(in_file);
-    fclose(out_file);
+    struct assembler_context* context = malloc(sizeof(struct assembler_context));
+    context->labels = init_label_list();
+    generate_label_table(filename, context);
+    context->in_file = fopen(filename, "r");
+    context->out_file = fopen(output_filename, "wb");
+    context->line = NULL;
+    context->line_nb = 1;
+    context->pos = 0;
+    context->instruction = NULL;
+    context->pos_instruction = 0;
+    mainLoop(context);
+    free(context->instruction);
+    free(context->line);
+    fclose(context->in_file);
+    fclose(context->out_file);
+    free(context);
 }

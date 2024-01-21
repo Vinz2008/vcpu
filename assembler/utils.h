@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stddef.h>
+#include "labels.h"
 
 #define BIN_WRITE_BUF_SIZE 4
 
