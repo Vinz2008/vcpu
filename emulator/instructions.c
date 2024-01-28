@@ -124,6 +124,24 @@ void instruction_sub_reg_from_reg(struct emulator_context* context, uint8_t reg,
     *get_reg_address(context, reg) = *get_reg_address(context, reg) - *get_reg_address(context, data2);
 }
 
+void instruction_mul_val_and_reg(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2){
+    uint16_t value = from_2_uint8_t_to_uint16_t(data1, data2);
+    *get_reg_address(context, reg) = *get_reg_address(context, reg) * value;
+}
+
+void instruction_div_reg_and_val(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2){
+    uint16_t value = from_2_uint8_t_to_uint16_t(data1, data2);
+    *get_reg_address(context, reg) = *get_reg_address(context, reg) / value;
+}
+
+void instruction_mul_reg_and_reg(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2){
+    *get_reg_address(context, reg) = *get_reg_address(context, reg) * *get_reg_address(context, data2);
+}
+
+void instruction_div_reg_and_reg(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2){
+    *get_reg_address(context, reg) = *get_reg_address(context, reg) / *get_reg_address(context, data2);
+}
+
 void instruction_jump_always(struct emulator_context* context, uint16_t address){
     context->pc = address;
 }

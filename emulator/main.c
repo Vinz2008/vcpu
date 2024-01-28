@@ -107,24 +107,28 @@ int main(int argc, char** argv){
                 instruction_sub_val_from_reg(context, reg, data1, data2);
                 break;
             case 0x42:
-                printf("ADD reg to reg");
+                printf("ADD reg to reg\n");
                 instruction_add_reg_to_reg(context, reg, data1, data2);
                 break;
             case 0x43:
-                printf("SUB reg from reg");
+                printf("SUB reg from reg\n");
                 instruction_sub_reg_from_reg(context, reg, data1, data2);
                 break;
             case 0x44:
-                printf("MUL val and reg");
+                printf("MUL val and reg\n");
+                instruction_mul_val_and_reg(context, reg, data1, data2);
                 break;
             case 0x45:
-                printf("DIV reg and val");
+                printf("DIV reg and val\n");
+                instruction_div_reg_and_val(context, reg, data1, data2);
                 break;
             case 0x46:
-                printf("MUL reg and reg");
+                printf("MUL reg and reg\n");
+                instruction_mul_reg_and_reg(context, reg, data1, data2);
                 break;
             case 0x47:
-                printf("DIV reg and reg");
+                printf("DIV reg and reg\n");
+                instruction_div_reg_and_reg(context, reg, data1, data2);
                 break;
             case 0xFF:
                 printf("NOOP\n");

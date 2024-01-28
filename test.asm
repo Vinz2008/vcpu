@@ -12,4 +12,7 @@ LOAD r4, r0
 LOAD r0, r4 
 CMP r3, 10
 JLT start_loop
+LOAD r4, 3
+MUL r4, 10
+DIV r4, 2
 NOOP
