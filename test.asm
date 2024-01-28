@@ -8,6 +8,8 @@ JEQ 0x0
 LOAD r3, 0
 .start_loop
 ADD r3, 1
+LOAD r4, r0 
+LOAD r0, r4 
 CMP r3, 10
 JLT start_loop
 NOOP

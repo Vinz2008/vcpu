@@ -28,9 +28,13 @@ instructions : 32 bits wide (first byte opcode, second register, third and fourt
 -> 0x33 : branch always
 0x4X : Math
 -> 0x40 : add value to register (ADD r0, 2 -> r0 = r0 + 2)
--> 0x41 : subtract value from register (SUB r1, r0 -> r1 - r0)
+-> 0x41 : subtract value from register (SUB r1, 2 -> r1 - 2)
 -> 0x42 : add register to register (ADD r0, r1 -> r0 = r0 + r1)
 -> 0x43 : substract register from register (SUB r1, r0 -> r1 - r0)
+-> 0x44 : multiply value and register (MUL r0, 2 -> r0 = r0 * 2)
+-> 0x45 : divide value and register (DIV r0, 2 -> r0 = r0 / 2)
+-> 0x46 : multiply register and register (MUL r0, r1 -> r0 = r0 * r1)
+-> 0x47 : divide register and register (DIV r0, r1 -> r0 = r0 / r1)
 
 0xFX : misc
 -> 0xFF : noop

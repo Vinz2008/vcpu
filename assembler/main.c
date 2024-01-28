@@ -52,6 +52,9 @@ void mainLoop(struct assembler_context* context){
         generate_cmp(context);
     } else if (context->instruction[0] == 'J'){
         generate_jmp(context);
+    } else {
+        printf("ERROR : Unknown instruction : %s\n", context->instruction);
+        exit(1);
     }
 
     }

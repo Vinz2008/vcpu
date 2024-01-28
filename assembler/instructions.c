@@ -19,7 +19,7 @@ extern FILE* out_file;
 
 extern char* instruction;*/
 
-// TODO move every generated instructions in its own function
+
 // TODO : functions depending of the type of parsing
 //        example instead of generate_noop() and generate_halt(),
 //        we would have generate_no_arg(uint8_t instruction) and we would pass 0xFF for noop and 0xFE for halt
@@ -52,9 +52,8 @@ void generate_load(struct assembler_context* context){
         data2 = uint16_t_high((uint16_t)context->hex_nb);
     }
     getNextToken(context);
-    // 0X00 instruction
-    // TODO : create a function which allocates the buffer and fill it
-    uint8_t* buf = malloc(sizeof(uint8_t) * BIN_WRITE_BUF_SIZE);
+    write_instruction_to_file(context, load_instruction, reg_temp, data1, data2);
+    /*uint8_t* buf = malloc(sizeof(uint8_t) * BIN_WRITE_BUF_SIZE);
     buf[0] = load_instruction;
     buf[1] = reg_temp;
     //uint16_t nb_temp = (uint16_t)number;
@@ -64,7 +63,7 @@ void generate_load(struct assembler_context* context){
     printf("reg nb write : %d %d\n", context->reg_nb, (uint8_t)context->reg_nb);
     fwrite(buf, 1, BIN_WRITE_BUF_SIZE, context->out_file);
     debug_print_uint8_buf(buf, BIN_WRITE_BUF_SIZE);
-    free(buf);
+    free(buf);*/
 }
 
 void generate_add(struct assembler_context* context){
@@ -95,13 +94,14 @@ void generate_add(struct assembler_context* context){
         error_and_exit(context, "expected a number or a reg in instruction %s\n", context->instruction);
     }
     getNextToken(context);
-    uint8_t* buf = malloc(sizeof(uint8_t) * BIN_WRITE_BUF_SIZE);
+    write_instruction_to_file(context, instruction_to_write, reg_temp, data1, data2);
+    /*uint8_t* buf = malloc(sizeof(uint8_t) * BIN_WRITE_BUF_SIZE);
     buf[0] = instruction_to_write;
     buf[1] = reg_temp;
     buf[2] = data1;
     buf[3] = data2;
     fwrite(buf, 1, BIN_WRITE_BUF_SIZE, context->out_file);
-    free(buf);
+    free(buf);*/
 }
 
 
@@ -134,33 +134,36 @@ void generate_sub(struct assembler_context* context){
         error_and_exit(context, "expected a number or a reg in instruction %s\n", context->instruction);
     }
     getNextToken(context);
-    uint8_t* buf = malloc(sizeof(uint8_t) * BIN_WRITE_BUF_SIZE);
+    write_instruction_to_file(context, instruction_to_write, reg_temp, data1, data2);
+    /*uint8_t* buf = malloc(sizeof(uint8_t) * BIN_WRITE_BUF_SIZE);
     buf[0] = instruction_to_write;
     buf[1] = reg_temp;
     buf[2] = data1;
     buf[3] = data2;
     fwrite(buf, 1, BIN_WRITE_BUF_SIZE, context->out_file);
-    free(buf);
+    free(buf);*/
 }
 
 void generate_misc(struct assembler_context* context){
     getNextToken(context);
-    uint8_t* buf = malloc(sizeof(uint8_t) * BIN_WRITE_BUF_SIZE);
+    uint8_t instruction;
+    //uint8_t* buf = malloc(sizeof(uint8_t) * BIN_WRITE_BUF_SIZE);
     if (strcmp("NOOP", context->instruction) == 0){
-        buf[0] = 0xFF;
+        instruction = 0xFF;
     } else { // HALT
-        buf[0] = 0xFE; 
+        instruction =  0xFE; 
     }
-    memset(buf+1, 0, BIN_WRITE_BUF_SIZE-1);
+    write_single_instruction_to_file(context, instruction);
+    /*memset(buf+1, 0, BIN_WRITE_BUF_SIZE-1);
     fwrite(buf, 1, BIN_WRITE_BUF_SIZE, context->out_file);
-    free(buf);
+    free(buf);*/
 }
 
 
 // TODO : have only one function for all jumps because the code is very similar
 void generate_jmp_always(struct assembler_context* context){
-    uint8_t* buf = malloc(sizeof(uint8_t) * BIN_WRITE_BUF_SIZE);
-    buf[0] = 0x33;
+    //uint8_t* buf = malloc(sizeof(uint8_t) * BIN_WRITE_BUF_SIZE);
+    uint8_t instruction_to_write = 0x33;
     // TODO : replace address with label. Need pre-parsing and hashmap with address = linenumber * 4
     if (context->CurTok != tok_hex){
         error_and_exit(context, "expected an address in instruction %s\n", context->instruction);
@@ -168,16 +171,19 @@ void generate_jmp_always(struct assembler_context* context){
     getNextToken(context);
     uint8_t data1 = uint16_t_low((uint16_t)context->hex_nb);
     uint8_t data2 = uint16_t_high((uint16_t)context->hex_nb);
-    buf[2] = data1;
+    write_instruction_to_file(context, instruction_to_write, 0, data1, data2);
+    
+    /*buf[2] = data1;
     buf[3] = data2;
     memset(buf+1, 0, BIN_WRITE_BUF_SIZE-3);
     fwrite(buf, 1, BIN_WRITE_BUF_SIZE, context->out_file);
-    free(buf);
+    free(buf);*/
 }
 
 void generate_jmp_equ(struct assembler_context* context){
-    uint8_t* buf = malloc(sizeof(uint8_t) * BIN_WRITE_BUF_SIZE);
-    buf[0] = 0x30;
+    //uint8_t* buf = malloc(sizeof(uint8_t) * BIN_WRITE_BUF_SIZE);
+    //buf[0] = 0x30;
+    uint8_t instruction_to_write = 0x30;
     uint8_t data1, data2;
     if (context->CurTok == tok_number){
         data1 = uint16_t_low((uint16_t)context->number);
@@ -193,16 +199,17 @@ void generate_jmp_equ(struct assembler_context* context){
         error_and_exit(context, "expected an address or a number in instruction %s\n", context->instruction);
     }
     getNextToken(context);
-    buf[2] = data1;
+    write_instruction_to_file(context, instruction_to_write, 0, data1, data2);
+    /*buf[2] = data1;
     buf[3] = data2;
     memset(buf+1, 0, BIN_WRITE_BUF_SIZE-3);
     fwrite(buf, 1, BIN_WRITE_BUF_SIZE, context->out_file);
-    free(buf);
+    free(buf);*/
 }
 
 void generate_jmp_greater_than(struct assembler_context* context){
-    uint8_t* buf = malloc(sizeof(uint8_t) * BIN_WRITE_BUF_SIZE);
-    buf[0] = 0x31;
+    //uint8_t* buf = malloc(sizeof(uint8_t) * BIN_WRITE_BUF_SIZE);
+    uint8_t instruction_to_write = 0x31;
     uint8_t data1, data2;
     if (context->CurTok == tok_number){
         data1 = uint16_t_low((uint16_t)context->number);
@@ -218,16 +225,17 @@ void generate_jmp_greater_than(struct assembler_context* context){
         error_and_exit(context, "expected an address or a number in instruction %s\n", context->instruction);
     }
     getNextToken(context);
-    buf[2] = data1;
+    write_instruction_to_file(context, instruction_to_write, 0, data1, data2);
+    /*buf[2] = data1;
     buf[3] = data2;
     memset(buf+1, 0, BIN_WRITE_BUF_SIZE-3);
     fwrite(buf, 1, BIN_WRITE_BUF_SIZE, context->out_file);
-    free(buf);
+    free(buf);*/
 }
 
 void generate_jmp_lower_than(struct assembler_context* context){
-    uint8_t* buf = malloc(sizeof(uint8_t) * BIN_WRITE_BUF_SIZE);
-    buf[0] = 0x32;
+    //uint8_t* buf = malloc(sizeof(uint8_t) * BIN_WRITE_BUF_SIZE);
+    uint8_t instruction_to_write = 0x32;
     uint8_t data1, data2;
     if (context->CurTok == tok_number){
         data1 = uint16_t_low((uint16_t)context->number);
@@ -236,7 +244,7 @@ void generate_jmp_lower_than(struct assembler_context* context){
         data1 = uint16_t_low((uint16_t)context->hex_nb);
         data2 = uint16_t_high((uint16_t)context->hex_nb);
     } else if (context->CurTok == tok_label_name){
-        int label_address = get_from_label_table(context->label_name, context);
+        int label_address = get_from_label_table(context->label_name, context)-8;
         printf("label_address : %d\n", label_address);
         data1 = uint16_t_low((uint16_t)label_address);
         data2 = uint16_t_high((uint16_t)label_address);
@@ -244,11 +252,12 @@ void generate_jmp_lower_than(struct assembler_context* context){
         error_and_exit(context, "expected an address or a number in instruction %s\n", context->instruction);
     }
     getNextToken(context);
-    buf[2] = data1;
+    write_instruction_to_file(context, instruction_to_write, 0, data1, data2);
+    /*buf[2] = data1;
     buf[3] = data2;
     memset(buf+1, 0, BIN_WRITE_BUF_SIZE-3);
     fwrite(buf, 1, BIN_WRITE_BUF_SIZE, context->out_file);
-    free(buf);
+    free(buf);*/
 }
 
 void generate_jmp(struct assembler_context* context){
@@ -292,11 +301,12 @@ void generate_cmp(struct assembler_context* context){
         error_and_exit(context, "expected a number or a reg in instruction %s\n", context->instruction);
     }
     getNextToken(context);
-    uint8_t* buf = malloc(sizeof(uint8_t) * BIN_WRITE_BUF_SIZE);
+    write_instruction_to_file(context, instruction_to_write, reg_temp, data1, data2);
+    /*uint8_t* buf = malloc(sizeof(uint8_t) * BIN_WRITE_BUF_SIZE);
     buf[0] = instruction_to_write;
     buf[1] = reg_temp;
     buf[2] = data1;
     buf[3] = data2;
     fwrite(buf, 1, BIN_WRITE_BUF_SIZE, context->out_file);
-    free(buf);
+    free(buf);*/
 }
