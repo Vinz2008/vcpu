@@ -10,12 +10,17 @@ ASSEMBLERDIR = assembler
 ASSEMBLERSRCS := $(wildcard $(ASSEMBLERDIR)/*.c)
 ASSEMBLEROBJS = $(patsubst %.c,%.o,$(ASSEMBLERSRCS))
 
+RUNNERDIR = runner
+
+RUNNERSRCS := $(wildcard $(RUNNERDIR)/*.c)
+RUNNEROBJS = $(patsubst %.c,%.o,$(RUNNERSRCS))
+
 CFLAGS = -Wall -O2 -c -g
 
 #CFLAGS += -fsanitize=address
 #LDFLAGS = -fsanitize=address
 
-all: emulator assembler
+all: emulator assembler runner
 
 emulator: vcpu-emulator
 
@@ -33,8 +38,16 @@ vcpu-assembler: $(ASSEMBLEROBJS)
 $(ASSEMBLERDIR)/%.o:$(ASSEMBLERDIR)/%.c
 	$(CC) $(CFLAGS) -o $@ $^
 
+runner: vcpu-runner
+
+vcpu-runner: $(RUNNEROBJS)
+	$(CC) -o $@ $^ $(LDFLAGS)
+
+$(RUNNERDIR)/%.o:$(RUNNERDIR)/%.c
+	$(CC) $(CFLAGS) -o $@ $^
+
 clean:
-	rm -rf $(EMULATORDIR)/*.o $(ASSEMBLERDIR)/*.o
+	rm -rf $(EMULATORDIR)/*.o $(ASSEMBLERDIR)/*.o $(RUNNERDIR)/*.o
 
 run:
 	./vcpu-emulator test.bin

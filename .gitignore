@@ -1,5 +1,6 @@
 vcpu-emulator
 vcpu-assembler
+vcpu-runner
 *.o
 out.bin
 .vscode

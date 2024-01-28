@@ -48,6 +48,10 @@ void mainLoop(struct assembler_context* context){
         generate_add(context);
     } else if (strcmp("SUB", context->instruction) == 0){
         generate_sub(context);
+    } else if (strcmp("MUL", context->instruction) == 0){
+        generate_mul(context);
+    } else if (strcmp("DIV", context->instruction) == 0){
+        generate_div(context);
     } else if (strcmp("CMP", context->instruction) == 0){
         generate_cmp(context);
     } else if (context->instruction[0] == 'J'){

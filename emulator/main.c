@@ -114,6 +114,18 @@ int main(int argc, char** argv){
                 printf("SUB reg from reg");
                 instruction_sub_reg_from_reg(context, reg, data1, data2);
                 break;
+            case 0x44:
+                printf("MUL val and reg");
+                break;
+            case 0x45:
+                printf("DIV reg and val");
+                break;
+            case 0x46:
+                printf("MUL reg and reg");
+                break;
+            case 0x47:
+                printf("DIV reg and reg");
+                break;
             case 0xFF:
                 printf("NOOP\n");
                 break;
