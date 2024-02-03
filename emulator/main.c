@@ -25,7 +25,8 @@ int main(int argc, char** argv){
         fprintf(stderr, "Error when allocating the memory of the virtual cpu\n");
         exit(1);
     }
-    context->mem[0xffff] = 3;
+    //context->mem[0xffff] = 3;
+    context->r10 = 0xffff; // setting the stack pointer to the end of the memory
     context->cmp_flag = false;
     context->is_greater_flag = false;
     context->is_lower_flag = false;
@@ -133,6 +134,18 @@ int main(int argc, char** argv){
             case 0x47:
                 printf("DIV reg and reg\n");
                 instruction_div_reg_and_reg(context, reg, data1, data2);
+                break;
+            case 0x50:
+                printf("PUSH value\n");
+                instruction_push_val(context, data1, data2);
+                break;
+            case 0x51:
+                printf("PUSH value from reg\n");
+                instruction_push_val_from_reg(context, reg);
+                break;
+            case 0x52:
+                printf("POP value from the stack\n");
+                instruction_pop_val(context, reg);
                 break;
             case 0xF0:
                 printf("SYSCALL\n");

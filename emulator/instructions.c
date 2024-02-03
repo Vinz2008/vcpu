@@ -204,3 +204,19 @@ void instruction_syscall(struct emulator_context* context){
             fprintf(stderr, "WARNING : Unknown syscall\n");
     }
 }
+
+void instruction_push_val(struct emulator_context* context, uint8_t data1, uint8_t data2){
+    uint16_t value = from_2_uint8_t_to_uint16_t(data1, data2);
+    context->mem[context->r10-1] = value;
+    context->r10--;
+}
+
+void instruction_push_val_from_reg(struct emulator_context* context, uint8_t reg){
+    context->mem[context->r10-1] = *get_reg_address(context, reg);
+    context->r10--;
+}
+
+void instruction_pop_val(struct emulator_context* context, uint8_t reg){
+    *get_reg_address(context, reg) = context->mem[context->r10];
+    context->r10++;
+}
