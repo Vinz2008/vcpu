@@ -197,3 +197,10 @@ void instruction_jump(struct emulator_context* context, uint8_t instruction, uin
         exit(1);
     }   
 }
+
+void instruction_syscall(struct emulator_context* context){
+    switch (context->r1){ // syscall number
+        default:
+            fprintf(stderr, "WARNING : Unknown syscall\n");
+    }
+}

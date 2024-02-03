@@ -134,6 +134,10 @@ int main(int argc, char** argv){
                 printf("DIV reg and reg\n");
                 instruction_div_reg_and_reg(context, reg, data1, data2);
                 break;
+            case 0xF0:
+                printf("SYSCALL\n");
+                instruction_syscall(context);
+                break;
             case 0xFF:
                 printf("NOOP\n");
                 break;

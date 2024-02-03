@@ -17,5 +17,6 @@ void instruction_mul_reg_and_reg(struct emulator_context* context, uint8_t reg, 
 void instruction_div_reg_and_reg(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2);
 void instruction_cmp_reg_with_reg(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2);
 void instruction_cmp_reg_with_num(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2);
-uint16_t from_2_uint8_t_to_uint16_t(uint8_t u1, uint8_t u2);
 void instruction_jump(struct emulator_context* context, uint8_t instruction, uint16_t address);
+void instruction_syscall(struct emulator_context* context);
+uint16_t from_2_uint8_t_to_uint16_t(uint8_t u1, uint8_t u2);
