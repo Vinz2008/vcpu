@@ -16,6 +16,18 @@ uint16_t* get_reg_address(struct emulator_context* context, uint8_t reg){
             return &context->r3;
         case 0x04:
             return &context->r4;
+        case 0x05:
+            return &context->r5;
+        case 0x06:
+            return &context->r6;
+        case 0x07:
+            return &context->r7;
+        case 0x08:
+            return &context->r8;
+        case 0x09:
+            return &context->r9;
+        case 0x0A:
+            return &context->r10;
         default:
             return NULL;
     }

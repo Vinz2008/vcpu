@@ -36,16 +36,31 @@ instructions : 32 bits wide (first byte opcode, second register, third and fourt
 -> 0x46 : multiply register and register (MUL r0, r1 -> r0 = r0 * r1)
 -> 0x47 : divide register and register (DIV r0, r1 -> r0 = r0 / r1)
 
+
 0xFX : misc
--> 0xFF : noop
+-> 0xF0 : syscall
 -> 0xFE : halt
+-> 0xFF : noop
 
 
 (TODO : add an instruction for syscalls)
+(TODO : add permissions for syscalls to access the filesystem, the network)
+(TODO : add a way to call c functions : use syscall to also use the permission system to select which c functions can be called or use a dedicated instruction)
+(TODO : add instruction for stack : push)
+(TODO : have multiple segments in executables : one for strings, one for coded, one for global vars, etc)
 
 
 ## Registers
 
-r0, r1, r2, r3, r4, 
+r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 (r10 is for the stack pointer)
 
 pc (16 bits) : address
+
+## Calling convention
+
+Using r0 for return address,
+r1, r2, r3, and r4 are for args. If you have more args, you will need to push them on the stack
+
+## The stack
+
+The stack starts at 0xffff (the end of the memory) and grow downward

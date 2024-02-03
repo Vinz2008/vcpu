@@ -97,15 +97,32 @@ int gettok(struct assembler_context* context){
         }
         if (LastChar == 'r'){
             //reg
-            LastChar = getCharLine(context);
+            char* regNbStr = malloc(10 * sizeof(char));
+            int pos_regNbStr = 0;
+            do {
+                LastChar = getCharLine(context);
+                regNbStr[pos_regNbStr] = LastChar;
+                printf("adding char to regNb : %d\n", LastChar);
+                pos_regNbStr++;
+            } while (isdigit(LastChar));
+            /*LastChar = getCharLine(context);
+            regNbStr[pos_regNbStr++] = LastChar;
+            while (isdigit(LastChar)){
+                LastChar = getCharLine(context);
+                regNbStr[pos_regNbStr] = LastChar;
+                pos_regNbStr++;
+            }*/
+            /*LastChar = getCharLine(context);
             if (!isdigit(LastChar)){
                 // TODO : create a error and exit function
                 fprintf(stderr, "reg number is not valid");
                 exit(1);
             }            
-            context->reg_nb = -('0' - LastChar);
+            context->reg_nb = -('0' - LastChar);*/
+            context->reg_nb = (int)strtol(regNbStr, NULL, 10);
+            //free(regNbStr);
             printf("reg number : %d\n", context->reg_nb);
-            LastChar = getCharLine(context);
+            //LastChar = getCharLine(context);
             return tok_reg;
         }
         // label name

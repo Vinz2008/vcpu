@@ -21,6 +21,10 @@ int main(int argc, char** argv){
     struct emulator_context* context = malloc(sizeof(struct emulator_context));
     //context->code = malloc(sizeof(uint8_t) * 1);
     context->mem = malloc(sizeof(uint8_t) * (MEM_SIZE+1));
+    if (!context->mem){
+        fprintf(stderr, "Error when allocating the memory of the virtual cpu\n");
+        exit(1);
+    }
     context->mem[0xffff] = 3;
     context->cmp_flag = false;
     context->is_greater_flag = false;
