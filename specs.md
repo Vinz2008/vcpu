@@ -36,17 +36,23 @@ instructions : 32 bits wide (first byte opcode, second register, third and fourt
 -> 0x46 : multiply register and register (MUL r0, r1 -> r0 = r0 * r1)
 -> 0x47 : divide register and register (DIV r0, r1 -> r0 = r0 / r1)
 
-0x5X : Stack
--> 0x50 : push a value to the stack
--> 0x51 : push a value from a register to the stack
--> 0x52 : pop the last value from the stack to a register
+0x5X : logical operators ops
+-> 0x50 : AND
+-> 0x51 : OR
+-> 0x52 : NOT
+-> 0x53 : XOR
 
+0xEX : Stack
+-> 0xE0 : push a value to the stack
+-> 0xE1 : push a value from a register to the stack
+-> 0xE2 : pop the last value from the stack to a register
 
 0xFX : misc
 -> 0xF0 : syscall
 -> 0xFE : halt
 -> 0xFF : noop
 
+(TODO : implement logical operators)
 (TODO : add permissions for syscalls to access the filesystem, the network)
 (TODO : add a way to call c functions : use syscall to also use the permission system to select which c functions can be called or use a dedicated instruction)
 (TODO : add instruction for stack : push)

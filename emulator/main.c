@@ -135,15 +135,15 @@ int main(int argc, char** argv){
                 printf("DIV reg and reg\n");
                 instruction_div_reg_and_reg(context, reg, data1, data2);
                 break;
-            case 0x50:
+            case 0xE0:
                 printf("PUSH value\n");
                 instruction_push_val(context, data1, data2);
                 break;
-            case 0x51:
+            case 0xE1:
                 printf("PUSH value from reg\n");
                 instruction_push_val_from_reg(context, reg);
                 break;
-            case 0x52:
+            case 0xE2:
                 printf("POP value from the stack\n");
                 instruction_pop_val(context, reg);
                 break;
