@@ -64,26 +64,10 @@ void instruction_load_from_reg_to_reg(struct emulator_context* context, uint8_t 
 }
 
 void instruction_load_from_num_to_reg(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2){
-    /*if (data1 == 0x00){
-        // from reg to reg
-        // second param is a register
-        uint8_t reg_from = data2; 
-        printf("instruction : load from reg %x into reg %x\n", reg_from, reg);
-        printf("load %d\n", *get_reg_address(context, reg_from));
-        *get_reg_address(context, reg) = *get_reg_address(context, reg_from);
-    */
-    //} else {
-        // number into reg
-        uint16_t value = from_2_uint8_t_to_uint16_t(data1, data2);
-        printf("instruction : load from number %d (%x) into reg %x\n", value, value, reg);
-        *get_reg_address(context, reg) = value;
-
-
-        /*uint16_t address = from_2_uint8_t_to_uint16_t(data1, data2);
-        printf("instruction : load from mem %x into reg %x\n", address, reg);
-        *get_reg_address(context, reg) = context->mem[address];*/
-
-    //}
+    // number into reg
+    uint16_t value = from_2_uint8_t_to_uint16_t(data1, data2);
+    printf("instruction : load from number %d (%x) into reg %x\n", value, value, reg);
+    *get_reg_address(context, reg) = value;
 }
 
 
