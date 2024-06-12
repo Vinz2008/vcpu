@@ -182,6 +182,42 @@ void instruction_jump(struct emulator_context* context, uint8_t instruction, uin
     }   
 }
 
+void instruction_and_reg_and_val(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2){
+    uint16_t value = from_2_uint8_t_to_uint16_t(data1, data2);
+    *get_reg_address(context, reg) = *get_reg_address(context, reg) & value;
+}
+
+void instruction_and_reg_and_reg(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2){
+    *get_reg_address(context, reg) = *get_reg_address(context, reg) & *get_reg_address(context, data2);
+}
+
+void instruction_or_reg_and_val(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2){
+    uint16_t value = from_2_uint8_t_to_uint16_t(data1, data2);
+    *get_reg_address(context, reg) = *get_reg_address(context, reg) | value;
+}
+
+void instruction_or_reg_and_reg(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2){
+    *get_reg_address(context, reg) = *get_reg_address(context, reg) | *get_reg_address(context, data2);
+}
+
+void instruction_not_of_val(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2){
+    uint16_t value = from_2_uint8_t_to_uint16_t(data1, data2);
+    *get_reg_address(context, reg) = ~value;
+}
+
+void instruction_not_of_reg(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2){
+    *get_reg_address(context, reg) = ~(*get_reg_address(context, data2));
+}
+
+void instruction_xor_reg_and_val(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2){
+    uint16_t value = from_2_uint8_t_to_uint16_t(data1, data2);
+    *get_reg_address(context, reg) = *get_reg_address(context, reg) ^ value;
+}
+
+void instruction_xor_reg_and_reg(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2){
+    *get_reg_address(context, reg) = *get_reg_address(context, reg) ^ *get_reg_address(context, data2);
+}
+
 void instruction_syscall(struct emulator_context* context){
     switch (context->r1){ // syscall number
         default:

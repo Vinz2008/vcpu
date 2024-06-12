@@ -17,6 +17,14 @@ void instruction_mul_reg_and_reg(struct emulator_context* context, uint8_t reg, 
 void instruction_div_reg_and_reg(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2);
 void instruction_cmp_reg_with_reg(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2);
 void instruction_cmp_reg_with_num(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2);
+void instruction_and_reg_and_val(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2);
+void instruction_and_reg_and_reg(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2);
+void instruction_or_reg_and_val(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2);
+void instruction_or_reg_and_reg(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2);
+void instruction_not_of_val(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2);
+void instruction_not_of_reg(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2);
+void instruction_xor_reg_and_val(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2);
+void instruction_xor_reg_and_reg(struct emulator_context* context, uint8_t reg, uint8_t data1, uint8_t data2);
 void instruction_jump(struct emulator_context* context, uint8_t instruction, uint16_t address);
 void instruction_syscall(struct emulator_context* context);
 void instruction_pop_val(struct emulator_context* context, uint8_t reg);

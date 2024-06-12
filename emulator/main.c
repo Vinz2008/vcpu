@@ -139,6 +139,39 @@ int main(int argc, char** argv){
                 printf("DIV reg and reg\n");
                 instruction_div_reg_and_reg(context, reg, data1, data2);
                 break;
+            // TODO : bitwise operators
+            case 0x50:
+                printf("AND reg and val\n");
+                instruction_and_reg_and_val(context, reg, data1, data2);
+                break;
+            case 0x51:
+                printf("AND reg and reg\n");
+                instruction_and_reg_and_reg(context, reg, data1, data2);
+                break;
+            case 0x52:
+                printf("OR reg and val\n");
+                instruction_or_reg_and_val(context, reg, data1, data2);
+                break;
+            case 0x53:
+                printf("OR reg and reg\n");
+                instruction_or_reg_and_reg(context, reg, data1, data2);
+                break;
+            case 0x54:
+                printf("NOT to reg of val\n");
+                instruction_not_of_val(context, reg, data1, data2);
+                break;
+            case 0x55:
+                printf("NOT to reg of reg\n");
+                instruction_not_of_reg(context, reg, data1, data2);
+                break;
+            case 0x56:
+                printf("XOR reg and val\n");
+                instruction_xor_reg_and_val(context, reg, data1, data2);
+                break;
+            case 0x57:
+                printf("XOR reg and reg\n");
+                instruction_xor_reg_and_reg(context, reg, data1, data2);
+                break;
             case 0xE0:
                 printf("PUSH value\n");
                 instruction_push_val(context, data1, data2);
@@ -155,12 +188,12 @@ int main(int argc, char** argv){
                 printf("SYSCALL\n");
                 instruction_syscall(context);
                 break;
-            case 0xFF:
-                printf("NOOP\n");
-                break;
             case 0xFE:
                 printf("HALT\n");
                 while (1);
+                break;
+            case 0xFF:
+                printf("NOOP\n");
                 break;
             default:
                 printf("WARNING : unknown instruction : 0x%x\n", instruction);

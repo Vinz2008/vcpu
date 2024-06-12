@@ -197,7 +197,7 @@ void generate_jmp_always(struct assembler_context* context){
 
 void generate_jmp_equ(struct assembler_context* context){
     uint8_t instruction_to_write = 0x30;
-    uint8_t data1, data2;
+    uint8_t data1 = 0, data2 = 0;
     if (context->CurTok == tok_number){
         data1 = uint16_t_low((uint16_t)context->number);
         data2 = uint16_t_high((uint16_t)context->number);
@@ -217,7 +217,7 @@ void generate_jmp_equ(struct assembler_context* context){
 
 void generate_jmp_greater_than(struct assembler_context* context){
     uint8_t instruction_to_write = 0x31;
-    uint8_t data1, data2;
+    uint8_t data1 = 0, data2 = 0;
     if (context->CurTok == tok_number){
         data1 = uint16_t_low((uint16_t)context->number);
         data2 = uint16_t_high((uint16_t)context->number);
@@ -237,7 +237,7 @@ void generate_jmp_greater_than(struct assembler_context* context){
 
 void generate_jmp_lower_than(struct assembler_context* context){
     uint8_t instruction_to_write = 0x32;
-    uint8_t data1, data2;
+    uint8_t data1 = 0, data2 = 0;
     if (context->CurTok == tok_number){
         data1 = uint16_t_low((uint16_t)context->number);
         data2 = uint16_t_high((uint16_t)context->number);
@@ -270,7 +270,7 @@ void generate_jmp(struct assembler_context* context){
 }
 
 void generate_cmp(struct assembler_context* context){
-    int instruction_to_write;
+    int instruction_to_write = 0;
     getNextToken(context);
     if (context->CurTok != tok_reg){
         fprintf(stderr, "expected register after load instruction in line %d\n", context->line_nb);
