@@ -29,7 +29,6 @@ extern char* line;*/
 void mainLoop(struct assembler_context* context){
     getNextToken(context);
     while (true){
-    //getNextToken();
     printf("instruction_tok : %d\n", context->CurTok);
     if (context->CurTok == tok_eof){
         break;
@@ -39,10 +38,8 @@ void mainLoop(struct assembler_context* context){
         exit(1);
     }
     if (strcmp("LOAD", context->instruction) == 0){
-        //getNextToken();
         generate_load(context);
     } else if (strcmp("NOOP", context->instruction) == 0 || strcmp("HALT", context->instruction) == 0){
-        //getNextToken();
         generate_misc(context);
     } else if (strcmp("ADD", context->instruction) == 0){
         generate_add(context);
@@ -62,9 +59,6 @@ void mainLoop(struct assembler_context* context){
     }
 
     }
-    /*while (getNextToken() != tok_unknown && CurTok != '\0'){
-        printf("CurTok : %d\n", CurTok);
-    }*/
     //printf("exiting mainloop\n");
     return;
 }

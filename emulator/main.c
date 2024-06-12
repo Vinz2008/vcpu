@@ -25,25 +25,29 @@ int main(int argc, char** argv){
         fprintf(stderr, "Error when allocating the memory of the virtual cpu\n");
         exit(1);
     }
-    //context->mem[0xffff] = 3;
     context->r10 = 0xffff; // setting the stack pointer to the end of the memory
     context->cmp_flag = false;
     context->is_greater_flag = false;
     context->is_lower_flag = false;
-    int i = 0;
+    //int i = 0;
     FILE* f = fopen(filename, "rb");
-    //while (fread(&context->code[i],sizeof(uint8_t), 1, f) > 0){
-    while (fread(&context->mem[i],sizeof(uint8_t), 1, f) > 0){
-        //printf("%p\n", context->code[i]);
-        //context->code = realloc(context->code, sizeof(uint8_t) * (i + 1));
-        i++;
+    fseek(f, 0, SEEK_END);
+    context->code_size = ftell(f);
+    rewind(f);
+    int read_result = fread(context->mem, sizeof(uint8_t), context->code_size, f);
+    if (read_result != context->code_size){
+        fprintf(stderr, "Reading error of binary file\n");
+        exit(1);
     }
-    context->code_size = i;
-    printf("code size : %d\n", context->code_size);
-    /*for (int i = 0; i < context->code_size; i++){
-        printf("instruction : %x\n", context->code[i]);
+    //while (fread(&context->code[i],sizeof(uint8_t), 1, f) > 0){
+    /*while (fread(&context->mem[i],sizeof(uint8_t), 1, f) > 0){ // TODO : make big read instead of 1 by 1
+        //printf("%p\n", context->code[i]);
+        i++;
     }*/
-    //for (int i = 0; i < context->code_size; i += 4){
+    fclose(f);
+    //context->code_size = i;
+    //fprintf(stderr, "context->code_size : %d, i : %d\n", context->code_size, i);
+    printf("code size : %d\n", context->code_size);
 
     bool is_last_instruction_cmp = false;
 
@@ -169,9 +173,8 @@ int main(int argc, char** argv){
     }
     printf("REGS AT THE END : r0 = %x, r1 = %x, r2 = %x, r3 = %x, r4 = %x\n", context->r0, context->r1, context->r2, context->r3, context->r4);
     printf("REGS AT THE END as ints : r0 = %d, r1 = %d, r2 = %d, r3 = %d, r4 = %d\n", context->r0, context->r1, context->r2, context->r3, context->r4);
-    //free(context->code);
     free(context->mem);
     free(context);
-    fclose(f);
+    //fclose(f);
     return 0;
 }

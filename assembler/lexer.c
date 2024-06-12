@@ -7,24 +7,7 @@
 #include <stdbool.h>
 #include "context.h"
 
-//char* line = NULL;
-//int pos = 0;
-
-//int reg_nb;
-
 #define INSTRUCTION_BUF_SIZE 20
-//char* instruction;
-//int pos_instruction = 0;
-
-//int number;
-
-//int hex_nb;
-
-//int CurTok;
-
-//int line_nb = 1;
-
-//extern FILE* in_file;
 
 int getCharLine(struct assembler_context* context){
     static char* buffer;
@@ -33,7 +16,6 @@ int getCharLine(struct assembler_context* context){
         context->instruction = malloc(sizeof(char) * INSTRUCTION_BUF_SIZE);
         buf_size = 100;
         buffer = malloc(buf_size * sizeof(char)); // 100 is for now long enough for the max size of a line
-        //memset(buffer, 0, INSTRUCTION_BUF_SIZE);
         getline(&buffer, &buf_size, context->in_file);
         printf("got line buffer : %s\n", buffer);
         context->line = buffer;
@@ -50,22 +32,15 @@ int getCharLine(struct assembler_context* context){
     }
     //printf("c : %c\n", c);
     if (c == '#' || c == '.'){
-        //pos++;
         while (context->line[context->pos++] != '\n'){}
-        //pos++;
-        /*c = getCharLine();
-        printf("char after comment : %c %d\n", c);*/
         c = '\n';
     }
     if (c =='\n'){
         printf("NEW LINE\n");
         context->pos = 0;
         context->line_nb++;
-        //memset(buffer, 0, INSTRUCTION_BUF_SIZE);
         getline(&buffer, &buf_size, context->in_file);
         context->line = buffer;
-        //c = line[pos];
-        //pos++;
         c = getCharLine(context);
         printf("next char after \\n : %d\n", c);
         // TODO goToNextLine
@@ -105,24 +80,8 @@ int gettok(struct assembler_context* context){
                 printf("adding char to regNb : %d\n", LastChar);
                 pos_regNbStr++;
             } while (isdigit(LastChar));
-            /*LastChar = getCharLine(context);
-            regNbStr[pos_regNbStr++] = LastChar;
-            while (isdigit(LastChar)){
-                LastChar = getCharLine(context);
-                regNbStr[pos_regNbStr] = LastChar;
-                pos_regNbStr++;
-            }*/
-            /*LastChar = getCharLine(context);
-            if (!isdigit(LastChar)){
-                // TODO : create a error and exit function
-                fprintf(stderr, "reg number is not valid");
-                exit(1);
-            }            
-            context->reg_nb = -('0' - LastChar);*/
             context->reg_nb = (int)strtol(regNbStr, NULL, 10);
-            //free(regNbStr);
             printf("reg number : %d\n", context->reg_nb);
-            //LastChar = getCharLine(context);
             return tok_reg;
         }
         // label name
@@ -161,11 +120,6 @@ int gettok(struct assembler_context* context){
             pos_numstr++;
             LastChar = getCharLine(context);
         }
-        /*do {
-            numStr[pos_numstr] = LastChar;
-            pos_numstr++;
-            LastChar = getCharLine();
-        } while (isdigit(LastChar));*/
         // TODO : maybe add a special to int function : https://stackoverflow.com/questions/7021725/how-to-convert-a-string-to-integer-in-c to verify if the long is bigger than INT_MAX
         int base = (is_hex) ? 16 : 10;
         int val = (int)strtol(numStr, NULL, base);
